@@ -2,6 +2,8 @@
 
 ## Backbone
 
+Backbone is a library of objects for building javascript applications. Among other things, it provides Events, Models, and Collections.
+
 ### Backbone.Events
 
 At the heart of Backbone is an event system, which all Backbone objects incorporate.
@@ -16,7 +18,7 @@ An object will `stopListening` when it is destroyed.
 
 A model is an object, with properties.
 
-```
+```js
 var person = new Backbone.Model({
 	first_name: 'Pascal',
 	last_name: 'Balthrop',
@@ -28,7 +30,7 @@ A model has `get` and `set` methods.
 
 ```js
 person.get('first_name'); //=> 'Pascal'
-person.get('last_name');  //=> 'Balthrop'
+person.set('last_name', 'Koplovitz');
 ```
 
 A model triggers `change` events when a property is changed.
