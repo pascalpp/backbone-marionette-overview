@@ -121,9 +121,10 @@ You can add or remove models, or query the collection, or iterate over it. `DEMO
 
 ## Collection Events
 
-- An `add` event is triggered when a model is added.
-- A `remove` event is triggered when a model is removed.
-- Any `change` events triggered on the models in a collection are triggered on the collection too.
+- `add`: a model was added.
+- `remove`: a model was removed.
+- `change`: one of the models in the collection was changed.
+- many others
 
 `DEMO`
 
