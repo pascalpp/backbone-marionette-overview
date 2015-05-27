@@ -1,12 +1,14 @@
 # Backbone & Marionette
 
-A high-level overview, covering all the important bits.
+The important bits
 
 !
 
-## Backbone
+# Backbone
 
-"Building blocks"
+Javascript building blocks
+
+[reveal]
 
 - Events
 - Models
@@ -16,30 +18,44 @@ A high-level overview, covering all the important bits.
 
 !
 
-## Backbone Events
+# Backbone.Events
+
+An event system built into every Backbone object
+
+[reveal]
 
 - When something happens, objects `trigger` events
-- Other objects `listenTo` those events and respond
+- Other objects `listenTo` those events with event handlers
 - Objects `stopListening` when they’re destroyed
-- Special `all` event
+
+Events names typically take the form of `verb` or `verb:subject`.
 
 !
 
-## Backbone Events
+# Backbone.Events
 
+
+- Event handlers typically get three arguments:
+	- [reveal]
+	- the object that changed
+	- the value that changed
+	- an options object
+- Special `all` event
 - Backbone events _are not_ DOM events
 
 !
 
-## Backbone.Model
+# Backbone.Model
 
 A model is an object that manages data.
+
+[reveal]
 
 ```js
 var person = new Backbone.Model({
 	first_name: 'Pascal',
-	last_name: 'Balthrop',
-	user_name: 'pascal'
+	last_name:  'Balthrop',
+	user_name:  'pascal'
 });
 ```
 
@@ -47,45 +63,58 @@ Similar to an `{object}`, but smarter.
 
 !
 
-## Backbone.Model
+# Backbone.Model
 
-You can `set` or `get` the properties of a model.
+Attributes are stored internally as `model.attributes`.
+
+[reveal]
+
+You can `set` or `get` individual attributes.
 
 ```js
 person.set('first_name', 'James');
 
-person.get('first_name');
-// returns 'James'
+person.get('first_name'); // returns 'James'
 ```
 
 !
 
-## Backbone.Model
+# Backbone.Model
 
-A model triggers `change` events when properties are changed.  `DEMO`
+You can set multiple attributes at once.
+
+```js
+person.set({
+	'first_name': 'Pascal',
+	'last_name':  'Balthrop'
+});
+```
+
+!
+
+# Backbone.Model
+
+A model triggers `change` events when attributes are changed.
+
+[reveal]
 
 ```js
 person.set('first_name', 'Blaise');
 // triggers 'change:first_name' and 'change'
 ```
 
-!
+A model _does not_ trigger `change` events when attributes are set to the same value as before.
 
-## Backbone.Model
+`DEMO:model_events`
 
-A model _does not_ trigger `change` events when properties<br>
-are set to the same value as before.
-
-```js
-person.set('first_name', 'Blaise');
-// nothing changed, so nothing is triggered
-```
 
 !
 
-## Backbone.Collection
+# Backbone.Collection
 
 A collection is an object that manages a list of models.
+
+[reveal]
 
 ```js
 var people = new Backbone.Collection([
@@ -101,46 +130,77 @@ var people = new Backbone.Collection([
 
 Similar to an `[array]`, but smarter.
 
-
-
 !
 
-## Backbone.Collection
+# Backbone.Collection
 
-You can add or remove models, or query the collection, or iterate over it. `DEMO`
+Models are stored internally in an array called `collection.models`.
 
-- `length`
-- `add`, `remove`, `reset`
+Things you can do with a collection:
+
+[reveal]
+
+- read the `length`
+- `add` and `remove` models
+- `pluck` a list of values
 - `push`, `pop`, `shift`, `unshift`
-- `first`, `last`
-- `map`, `each`
-- `find`, `filter`
+- `find`, `filter`, `map`, `each`
+- define a `comparator` for sorting
 - and more
 
+`DEMO:collection_methods`
+
 !
 
-## Collection Events
+# Backbone.Collection
+
+Collection events:
+
+[reveal]
 
 - `add`: a model was added.
 - `remove`: a model was removed.
+- `sort`: the collection was sorted.
 - `change`: one of the models in the collection was changed.
-- many others
+- and more
 
-`DEMO`
+`DEMO:collection_events`
 
 !
 
-## Backbone.View
+# Backbone.View
 
 A view is an object that manages a DOM node.
 
-You can access a view’s DOM node as `this.el` or `this.$el`.
+[reveal]
+
+```
+var MyView = Backbone.View.extend({
+	tagName: 'div',
+	className: 'myview'
+});
+
+var myview = new MyView();
+```
+
+The above view creates this DOM element:
+
+```htm
+<div class="myview"></div>
+```
+
+which can be accessed as `this.el` or `this.$el`.
+
 
 !
 
-## Backbone.View
+# Backbone.View
 
-The render method in a Backbone view is *empty*.
+But our DOM element is empty!
+
+[reveal]
+
+Because the `render` method in a Backbone view is *empty*.
 
 The implementation is left up to you:
 
@@ -157,47 +217,60 @@ This is where Marionette comes in.
 
 !
 
-## Marionette
+# Marionette
 
 Marionette objects do a lot of the heavy lifting for you.
 
+[reveal]
+
 - ItemView
 - CollectionView
-- LayoutView
 - Region
-- other stuff too
+- LayoutView
+- and some other stuff
 
 !
 
-## Marionette.ItemView
+# Marionette.ItemView
 
-- Accepts a model (`this.model`)
-- Consumes an HTML template you provide
-- Renders a DOM fragment with data from the model
-- Doesn’t insert itself into the DOM
+A view of a model
+
+[reveal]
+
+- Accepts a model (`this.model`) and a template
+- Provides a `render` method
+- Renders a DOM fragment by inserting data from the model into the template
+- Inserts that DOM fragment into its `el`
+- Can `listenTo` changes in the model and react accordingly
+- Manages any DOM events within its `el`
+
+Let’s make a view!
 
 !
 
 #### Using Marionette.ItemView
-## Define a template
+# Define a template
+
+[reveal]
 
 ```htm
 <!-- person.html -->
 <div class="name">
-	Name:
-	{{ data.first_name }}
-	{{ data.last_name }}
+	{{ data.first_name }} {{ data.last_name }}
 </div>
-<div class="username">
-	Username:
-	{{ data.user_name }}
+<div class="actions">
+	<button class="poke">Poke</button>
 </div>
 ```
+
+Note that we don’t define the outermost node in the template.
 
 !
 
 #### Using Marionette.ItemView
-## Define a view
+# Define a view
+
+[reveal]
 
 ```js
 // person_view.js
@@ -214,22 +287,21 @@ var PersonView = Marionette.ItemView.extend({
 });
 ```
 
-Note that there is no `render` method;<br>
-Marionette.ItemView provides that for us.
+Note that we don’t have to define a `render` method.
 
 !
 
 #### Using Marionette.ItemView
-## Define a view
+# Define a view
 
 ```js
 // person_view.js
-var Template = require('text!./person.html');
+var PersonTemplate = require('text!./person.html');
 
 var PersonView = Marionette.ItemView.extend({
 	tagName: 'li',
 	className: 'person',
-	template: _.template(Template),
+	template: _.template(PersonTemplate),
 	initialize: function(options) {
 		// re-render the view any time the model changes
 		this.listenTo(this.model, 'change', this.render);
@@ -237,12 +309,14 @@ var PersonView = Marionette.ItemView.extend({
 });
 ```
 
-Note that there is no `render` method;<br>Marionette.ItemView provides that for us.
+Note that we don’t have to define a `render` method.
 
 !
 
 #### Using Marionette.ItemView
-## Instantiate the view with a model and show it
+# Instantiate the view with a model and show it
+
+[reveal]
 
 ```js
 var PersonView = require('./person_view');
@@ -253,79 +327,101 @@ var person_view = new PersonView({
 });
 
 // show the view in a region
-AboutMe.main_region.show(person_view);
+region.show(person_view);
 ```
 
-!
-
-## Demo
-
+`DEMO:show_item_view`
 
 !
 
-## Inside a view
+#### Using Marionette.ItemView
+# The UI and Events Hashes
 
-A view can define a few other helpful properties or methods.
-
-
-!
-
-## Marionette.Region
-
-A region is an object that manages showing views in a particular DOM node.
+[reveal]
 
 ```js
-var my_region = new Marionette.Region({
-	el: '.my-region'
+var PersonView = Marionette.ItemView.extend({
+	[...]
+	ui: {
+		poke: 'button.poke'
+	},
 });
 ```
 
+The `ui` hash lets us create jQuery handles on parts of our view. (`this.ui.poke`)
+
 !
 
-#### Marionette.Region
-## Showing a view in the region
+#### Using Marionette.ItemView
+# The UI and Events Hashes
 
 ```js
-my_region.show(view);
+var PersonView = Marionette.ItemView.extend({
+	[...]
+	ui: {
+		poke: 'button.poke'
+	},
+	events: {
+		'click @ui.poke': 'onClickPoke'
+	},
+});
 ```
 
-The view's `render` method is called, and then `view.el` is appended to the region’s DOM node.
+[reveal]
+
+The `events` hash lets us map DOM events to methods in the view.
 
 !
 
-#### Marionette.Region
-## One view at a time!
-
-If you show a view in a region that already contains a view, the previous view is removed and destroyed.
-
-!
-
-#### Marionette.Region
-## Emptying a region
+#### Using Marionette.ItemView
+# The UI and Events Hashes
 
 ```js
-my_region.empty();
+var PersonView = Marionette.ItemView.extend({
+	[...]
+	ui: {
+		poke: 'button.poke'
+	},
+	events: {
+		'click @ui.poke': 'onClickPoke'
+	},
+	onClickPoke: function() {
+		this.model.set('poked', true);
+		this.ui.poke.remove();
+		alert('You poked ' + this.model.get('first_name') + '!');
+	}
+});
 ```
 
-Empties the region, destroying any view it contains.
+[reveal]
+
+`DEMO:show_item_view_with_events`
 
 !
 
-## Marionette.CollectionView
+# Marionette.CollectionView
 
-- Accepts a collection of models (`this.collection`)
-- Consumes an ItemView you define (`childView`)
-- Renders a view for each model in the collection
-- Combines them all into a single DOM fragment
+A view of a collection
+
+[reveal]
+
+- Accepts a collection of models (`this.collection`) and a `childView`
+- Renders a child view for each model in the collection
 - Automatically responds to collection events, such as `add` or `remove`
+- Can filter the collection, so only certain models are shown
+
+Let’s make a collection view!
 
 !
 
 #### Using Marionette.CollectionView
-## Define a collection view
+# Define a collection view
+
+[reveal]
 
 ```js
 // people_view.js
+var PersonView = require('./person_view');
 
 var PeopleView = Marionette.CollectionView.extend({
 	tagName: 'ul',
@@ -334,16 +430,18 @@ var PeopleView = Marionette.CollectionView.extend({
 });
 ```
 
+This creates a `ul.people` node and fills it with `li.person` nodes.
+
 Note that a collection view does not use a template; its child views do.
 
 !
 
 #### Using Marionette.CollectionView
-## Instantiate the view with a collection and show it
+# Instantiate the view with a collection and show it
+
+[reveal]
 
 ```js
-// people_view.js
-
 var PeopleView = require('./people_view');
 
 var people_view = new PeopleView({
@@ -351,41 +449,219 @@ var people_view = new PeopleView({
 });
 
 // show the view in a region
-AboutMe.main_region.show(people_view);
+region.show(people_view);
 ```
+
+`DEMO:collection_view`
 
 !
 
-## Marionette.LayoutView
+#### Using Marionette.CollectionView
+# Filtering the collection
+
+Collection views can define a `filter` method to control which models are displayed.
+
+[reveal]
+
+```js
+var PeopleView = Marionette.CollectionView.extend({
+	[...],
+	initialize: function() {
+        this.listenTo(this.collection, 'change', this.render);
+    }
+});
+```
+
+!
+#### Using Marionette.CollectionView
+# Filtering the collection
+
+Collection views can define a `filter` method to control which models are displayed.
+
+```js
+var PeopleView = Marionette.CollectionView.extend({
+	[...],
+	initialize: function() {
+        this.listenTo(this.collection, 'change', this.render);
+    },
+	filter: function(model) {
+		// return true if the model should be displayed
+	}
+});
+```
+
+!
+#### Using Marionette.CollectionView
+# Filtering the collection
+
+Collection views can define a `filter` method to control which models are displayed.
+
+```js
+var PeopleView = Marionette.CollectionView.extend({
+	[...],
+	initialize: function() {
+        this.listenTo(this.collection, 'change', this.render);
+    },
+	filter: function(model) {
+		return ! model.get('poked');
+	}
+});
+```
+
+[reveal]
+
+`DEMO:filtered_collection_view`
+
+!
+
+# Marionette.Region
+
+[reveal]
+
+A region is an object that manages showing views in the DOM.
+
+```js
+var region = new Marionette.Region({
+	el: '.my-region'
+});
+```
+
+```js
+region.show(view);
+```
+
+This calls `view.render` and appends `view.el` to the region’s `el`.
+
+One view at a time! Any previous view is removed and destroyed.
+
+```js
+region.empty();
+```
+
+
+!
+
+# Marionette View Events
+
+[reveal]
+
+Backbone events are triggered _after_ the event has occurred.
+
+Many events have a `before` companion event.
+
+- `before:render` : The view is about to render.
+- `render`        : The view has rendered.
+- `before:show`   : The view is about to be shown.
+- `before:attach` : The view is about to be inserted into the DOM.
+- `attach`        : The view has been inserted into the DOM.
+- `show`          : The view has been shown.
+
+!
+
+# Marionette View Events
+
+A view can `listenTo` any of these events when it is initialized.
+
+[reveal]
+
+Or, it can define methods named after these events, using the convention:
+
+```
+event name      view event handler
+'some:event'    'onSomeEvent'
+```
+
+`onBeforeRender`, `onRender`, `onBeforeAttach`, `onAttach`, `onBeforeShow`, `onShow`, etc.
+
+This convention can be used for `custom:event` names too.
+
+!
+
+# Marionette.LayoutView
+
+[reveal]
 
 - Basically just an ItemView with built-in `regions`
 - Can show other views in its `regions`
 - Can be used as the `childView` in a collection
 
+Let’s make a layout view!
+
+TODO: show people view with first/last sort buttons in the head
+
 !
 
 #### Using Marionette.LayoutView
-## Define a template with some regions
+# Define a template with some regions
+
+[reveal]
 
 ```htm
 <!-- layout.html -->
-<p>Head region</p>
 <div class="head-region"></div>
-<p>Body region</p>
 <div class="body-region"></div>
 ```
 
 !
 
 #### Using Marionette.LayoutView
-## Define a layout view
+# Define a layout view
+
+[reveal]
 
 ```js
-// layout_view.js
-
+// require our template and a couple child views
 var Template = require('text!./layout.html');
+var HeadView = require('./head_view');
+var BodyView = require('./body_view');
+```
 
-// require in a couple child views
+!
+
+#### Using Marionette.LayoutView
+# Define a layout view
+
+```js
+// require our template and a couple child views
+var Template = require('text!./layout.html');
+var HeadView = require('./head_view');
+var BodyView = require('./body_view');
+
+var MyLayoutView = Marionette.LayoutView.extend({
+	className: 'my-layout',
+	template: _.template(Template)
+});
+```
+
+!
+
+#### Using Marionette.LayoutView
+# Define a layout view
+
+```js
+// require our template and a couple child views
+var Template = require('text!./layout.html');
+var HeadView = require('./head_view');
+var BodyView = require('./body_view');
+
+var MyLayoutView = Marionette.LayoutView.extend({
+	className: 'my-layout',
+	template: _.template(Template),
+	regions: {
+		head: '.head-region',
+		body: '.body-region'
+	}
+});
+```
+
+!
+
+#### Using Marionette.LayoutView
+# Define a layout view
+
+```js
+// require our template and a couple child views
+var Template = require('text!./layout.html');
 var HeadView = require('./head_view');
 var BodyView = require('./body_view');
 
@@ -396,7 +672,6 @@ var MyLayoutView = Marionette.LayoutView.extend({
 		head: '.head-region',
 		body: '.body-region'
 	},
-
 	onRender: function() {
 		// instantiate a new HeadView
 		// and show it in the head region
@@ -413,34 +688,10 @@ var MyLayoutView = Marionette.LayoutView.extend({
 });
 ```
 
-!
+[reveal]
 
-## Marionette View Events
-
-Backbone events are triggered _after_ the event has occurred.
-
-Many events have a `before` companion event.
-
-- `before:render` : The view is about to render.
-- `render`        : The view has rendered.
-- `before:show`   : The view is about to be shown.
-- `before:attach` : The view is about to be inserted into the DOM.
-- `attach`        : The view has been inserted into the DOM.
-- `show`          : The view has been shown.
+Adding child views `onRender` allows you to build a whole view hierarchy and push it into the DOM in one fell swoop.
 
 !
 
-## Marionette View Events
-
-A view can `listenTo` any of these events when it is initialized.
-
-Or, it can define methods names after these events, using the convention:
-
-```
-event name      view event handler
-'some:event'    'onSomeEvent'
-```
-
-`onBeforeRender`, `onRender`, `onBeforeAttach`, `onAttach`, `onBeforeShow`, `onShow`, etc.
-
-This convention can be used for `custom:events` too.
+# The End!

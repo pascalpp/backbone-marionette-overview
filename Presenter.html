@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1" />
-    <title>Markdown Presenter</title>
+    <title>Backbone &amp; Marionette</title>
     <style>
     html, body, table {
         margin:0;
@@ -9,13 +9,12 @@
         padding:0;
         font-family: Georgia;
         line-height: 1.4;
-        font-size: 10px;
         color: white;
         -ms-touch-action: none;
         -moz-user-select:none;
     }
     body {
-        padding: 80px;
+        padding: 80px 120px;
     }
 
     h1,h2,h3,h4,h5,h6 {
@@ -29,17 +28,20 @@
     h4,h5,h6 {
         opacity: 0.3;
     }
-    div.centered {
-        margin:auto;
-        font-size:40px;
-        text-shadow: #000 0 2px 0;
+
+
+    h1 {
+        font-size: 1.8em;
+    }
+    h4 {
+        font-size: 1em;
     }
     .slideCount {
         position: fixed;
-        top: 1em;
-        right: 2px;
+        top: 0;
+        left: 0;
+        width: 100%;
         height:1.5em;
-        width:8em;
         font-size: 18px;
         overflow:hidden;
     }
@@ -57,6 +59,7 @@
         font-size:1em;
         height:1.3em;
         width:10em;
+        display: none;
 
         -webkit-appearance: none;
         border-radius:0;
@@ -83,7 +86,33 @@
         opacity:0.01;
         z-index:-1;
     }
-    li {
+
+    .centered {
+        margin:auto;
+        font-size:32px;
+        text-shadow: #000 0 2px 0;
+        padding-bottom: 80px;
+        width: 100%;
+    }
+    .centered[slide=backbonemarionette] {
+        padding-top: 200px;
+        font-size: 50px;
+    }
+    .centered[slide=theend] {
+        padding-top: 300px;
+        font-size: 60px;
+        text-align: center;
+    }
+
+    .centered .reveal {
+        opacity: 0;
+        transition: opacity 100ms ease-in-out;
+    }
+    .centered .reveal.revealed {
+        opacity: 1;
+    }
+
+    .centered li {
         margin: 0.5em 0;
     }
     pre, code {
@@ -105,22 +134,65 @@
         font-size: 90%;
     }
 
-    p {
-        xmax-width: 26em;
-    }
-
     .testnode {
-        position: absolute;
+        position: fixed;
         background-color: #eee;
         color: #000;
         font-size: 20px;
         border: 1px solid;
-        left: 10px;
-        top: 10px;
+        right: 30px;
+        bottom: 50px;
         padding: 20px;
+        border-radius: 4px;
+        font-family: Helvetica;
     }
     .testnode:empty {
         display: none;
+    }
+
+    code.demo {
+        cursor: pointer;
+    }
+
+    .xwrapper {
+        display: flex;
+        flex-flow: column;
+        min-height: 1000px;
+        width: 100%;
+    }
+
+    .notes {
+        display: none;
+    }
+
+    ul.people {
+        margin: 0;
+        padding: 0;
+    }
+
+    li.person {
+        list-style: none;
+        background-image: url(./silhouette-200x200.png);
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin: 5px 0;
+        background-color: #dde;
+        padding: 10px 20px;
+        padding-left: 120px;
+        min-height: 80px;
+        display: flex;
+        flex-flow: column;
+        justify-content: space-between;
+        border-radius: 3px;
+    }
+
+    li.person .actions {
+        margin-top: 10px;
+        text-align: right;
+    }
+    li.person button {
+        font-size: 20px;
+        font-family: inherit;
     }
 
 
@@ -161,14 +233,18 @@
     <script src="./bower_components/backbone/backbone.js"></script>
     <script src="./bower_components/marionette/lib/backbone.marionette.js"></script>
     <script src="showdown.js"></script>
+    <script src="./demos.js"></script>
+
 </head>
 <body tabindex="1">
     <div class="for-screen">
 
         <div class="bg">&nbsp;</div>
 
-        <div class="centered">
-            <em>Loading</em>
+        <div class="wrapper">
+            <div class="centered">
+                <em>Loading</em>
+            </div>
         </div>
 
         <div class="testnode"></div>
@@ -197,6 +273,54 @@
     </div>
 
 <script>
+
+$('body').on('click', 'code.demo', function() {
+    var demo = $(this).data('demo');
+    dispatcher(demo);
+});
+
+var $view;
+var revealed = {};
+
+var prepSlide = function() {
+    $view.removeAttr('reveal').removeAttr('revealed');
+
+    var reveal = false;
+
+    // parse reveal
+    $view.find('p, pre, li, span').each(function() {
+        var $this = $(this);
+        if (reveal) {
+            $this.addClass('reveal');
+        }
+        if ($this.text() === '[reveal]') {
+            $this.remove();
+            if (Present.currentSlide >= Present.lastSlide) {
+                if (! revealed[Present.currentSlide]) {
+                    // only turn on reveal the first time a slide is shown
+                    revealed[Present.currentSlide] = true;
+                    reveal = true;
+                }
+            }
+        }
+    });
+
+    // make demo buttons clickable
+    $view.find('code').each(function() {
+        var $code = $(this)
+        var text = $code.text();
+        if (/^DEMO:/.test(text)) {
+            var parts = text.split(':');
+            var demo = parts[1];
+            $code.addClass('demo').data('demo', demo).text('DEMO');
+        }
+    });
+
+    var title = $view.find('h1,h2,h3,h4,h5,h6').first().attr('id');
+    $view.attr('slide', title);
+    $view.attr('number', Present.currentSlide+1);
+};
+
 var Present = {
     // Slide transition effects.
     effects: {
@@ -224,11 +348,14 @@ Present.currentSlide = Present.hashToSlideIndex();
 
 Present.showSlide = function(slide) {
     slide = Math.max(0, Math.min(slide, Present.slides.length - 1));
+    Present.lastSlide = Present.currentSlide;
     Present.currentSlide = slide;
 
-    var $view = $('.for-screen .centered');
+    $view = $('.for-screen .centered');
     this.currentEffect.pre($view, $.proxy(function () {
         $view.html(this.slides[this.currentSlide]);
+        region.empty();
+        prepSlide();
         this.currentEffect.post($view);
     }, this));
 
@@ -237,8 +364,13 @@ Present.showSlide = function(slide) {
     window.location.hash = '#' + (Present.currentSlide + 1);
 };
 Present.nextSlide = function() {
-    if (Present.currentSlide < Present.slides.length-1) {
-        Present.showSlide(Present.currentSlide+1);
+    var reveal = $view.find('.reveal').not('.revealed');
+    if (reveal.length) {
+        reveal.first().addClass('revealed');
+    } else {
+        if (Present.currentSlide < Present.slides.length-1) {
+            Present.showSlide(Present.currentSlide+1);
+        }
     }
 };
 Present.prevSlide = function() {
@@ -419,14 +551,6 @@ $('.slideCount select').change(function () {
     setTimeout(function () { document.body.focus(); }, 0);
 });
 </script>
-
-<script>
-setTimeout(function() {
-    // window.location.reload();
-}, 10000);
-</script>
-
-<script src="./demos.js"></script>
 
 </body>
 </html>
