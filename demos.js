@@ -195,7 +195,7 @@ var dispatcher = function(demo) {
 			logger.off();
 			console.log("people: check the length");
 			console.log("pluck first names");
-			console.log("set the comparator and sort");
+			console.log("sort by first name");
 			console.log("pluck first names again");
 			break;
 		case 'collection_events':
