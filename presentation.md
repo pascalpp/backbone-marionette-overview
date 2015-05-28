@@ -134,9 +134,9 @@ Similar to an `[array]`, but smarter.
 
 Models are stored internally in an array called `collection.models`.
 
-Things you can do with a collection:
-
 [reveal]
+
+Things you can do with a collection:
 
 - read the `length`
 - `add` and `remove` models
