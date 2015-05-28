@@ -335,12 +335,12 @@ var prepSlide = function() {
 			if (Present.currentSlide >= Present.lastSlide) {
 				if (! revealed[Present.currentSlide]) {
 					// only turn on reveal the first time a slide is shown
-					revealed[Present.currentSlide] = true;
 					reveal = true;
 				}
 			}
 		}
 	});
+	revealed[Present.currentSlide] = true;
 
 	// make demo buttons clickable
 	$view.find('code').each(function() {
