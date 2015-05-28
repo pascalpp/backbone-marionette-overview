@@ -5,26 +5,26 @@ _.templateSettings.evaluate		= /<:([\s\S]+?):>/g; // <: javascript logic :>
 _.templateSettings.variable		= 'data';
 
 var Logger = Marionette.Object.extend({
-    log: function(object, name) {
-        this.listenTo(object, 'all', this.makeLog(name));
-    },
+	log: function(object, name) {
+		this.listenTo(object, 'all', this.makeLog(name));
+	},
 
-    makeLog: function(object_name) {
-        return function() {
-            if (! this.is_on) return;
-            var args = _.toArray(arguments);
-            var event_name = args.shift();
-            console.log('%c'+object_name, 'margin:0 -3px;margin-left:-8px;color:white;background-color:#990000;padding:3px 8px;border-radius:10px', event_name, args);
-        };
-    },
+	makeLog: function(object_name) {
+		return function() {
+			if (! this.is_on) return;
+			var args = _.toArray(arguments);
+			var event_name = args.shift();
+			console.log('%c'+object_name, 'margin:0 -3px;margin-left:-8px;color:white;background-color:#990000;padding:3px 8px;border-radius:10px', event_name, args);
+		};
+	},
 
-    on: function() {
-        this.is_on = true;
-    },
+	on: function() {
+		this.is_on = true;
+	},
 
-    off: function() {
-        this.is_on = false;
-    }
+	off: function() {
+		this.is_on = false;
+	}
 });
 
 logger = new Logger();
@@ -54,8 +54,8 @@ var PersonView = Marionette.ItemView.extend({
 	className: 'person',
 	template: _.template(PersonTemplate),
 	initialize: function(options) {
-        logger.log(this, 'person_view');
-        // re-render the view any time the model changes
+		logger.log(this, 'person_view');
+		// re-render the view any time the model changes
 		this.listenTo(this.model, 'change', this.render);
 	}
 });
@@ -65,11 +65,11 @@ var PersonViewWithEvents = Marionette.ItemView.extend({
 	className: 'person',
 	template: _.template(PersonTemplate),
 	initialize: function(options) {
-        logger.log(this, 'person_view');
-        // re-render the view any time the model changes
+		logger.log(this, 'person_view');
+		// re-render the view any time the model changes
 		this.listenTo(this.model, 'change', this.render);
 	},
-    ui: {
+	ui: {
 		poke: 'button.poke',
 	},
 	events: {
@@ -77,7 +77,7 @@ var PersonViewWithEvents = Marionette.ItemView.extend({
 	},
 	onClickPoke: function() {
 		this.model.set('poked', true);
-        this.ui.poke.remove();
+		this.ui.poke.remove();
 		alert('You poked ' + this.model.get('first_name') + '!');
 	}
 });
@@ -93,11 +93,11 @@ var FilteredPersonView = Marionette.ItemView.extend({
 	className: 'person',
 	template: _.template(PersonTemplate),
 	initialize: function(options) {
-        logger.log(this, 'person_view');
-        // re-render the view any time the model changes
+		logger.log(this, 'person_view');
+		// re-render the view any time the model changes
 		this.listenTo(this.model, 'change', this.render);
 	},
-    ui: {
+	ui: {
 		poke: 'button.poke',
 	},
 	events: {
@@ -114,43 +114,43 @@ var FilteredPeopleView = Marionette.CollectionView.extend({
 	tagName: 'ul',
 	className: 'people',
 	childView: FilteredPersonView,
-    initialize: function() {
-        this.listenTo(this.collection, 'change', this.render);
-    },
-    filter: function(model) {
-        return ! model.get('poked');
-    }
+	initialize: function() {
+		this.listenTo(this.collection, 'change', this.render);
+	},
+	filter: function(model) {
+		return ! model.get('poked');
+	}
 });
 
 
 var SortButtonTemplate = '<div class="button first">First</div><div class="button last">Last</div>';
 
 var SortButtonView = Marionette.ItemView.extend({
-    className: 'sortbar',
-    template: _.template(SortButtonTemplate),
-    ui: {
-        first: '.button.first',
-        last: '.button.last',
-    },
-    events: {
-        'click @ui.first': 'sortByFirstName',
-        'click @ui.last': 'sortByLastName',
-    },
-    sortByFirstName: function() {
-        people.comparator = 'first_name';
-        people.sort();
-        this.ui.first.addClass('active');
-        this.ui.last.removeClass('active');
-    },
-    sortByLastName: function() {
-        people.comparator = 'last_name';
-        people.sort();
-        this.ui.last.addClass('active');
-        this.ui.first.removeClass('active');
-    },
-    onRender: function() {
-        this.sortByFirstName();
-    }
+	className: 'sortbar',
+	template: _.template(SortButtonTemplate),
+	ui: {
+		first: '.button.first',
+		last: '.button.last',
+	},
+	events: {
+		'click @ui.first': 'sortByFirstName',
+		'click @ui.last': 'sortByLastName',
+	},
+	sortByFirstName: function() {
+		people.comparator = 'first_name';
+		people.sort();
+		this.ui.first.addClass('active');
+		this.ui.last.removeClass('active');
+	},
+	sortByLastName: function() {
+		people.comparator = 'last_name';
+		people.sort();
+		this.ui.last.addClass('active');
+		this.ui.first.removeClass('active');
+	},
+	onRender: function() {
+		this.sortByFirstName();
+	}
 });
 
 var MyLayoutTemplate = '<div class="head-region"></div><div class="body-region"></div>';
@@ -179,69 +179,69 @@ var MyLayoutView = Marionette.LayoutView.extend({
 
 
 var region = new Marionette.Region({
-    el: '.testnode'
+	el: '.testnode'
 });
 
 
 var dispatcher = function(demo) {
-    console.clear();
-    switch(demo) {
-        case 'model_events':
-            logger.on();
-            console.log("person: set the first name");
-            console.log("set it again");
-            break;
-        case 'collection_methods':
-            logger.off();
-            console.log("people: check the length");
-            console.log("pluck first names");
-            console.log("set the comparator and sort");
-            console.log("pluck first names again");
-            break;
-        case 'collection_events':
-            logger.on();
-            console.log("people: get the last person");
-            console.log("remove the last person");
-            console.log("re-add the last person");
-            console.log("modify the last person");
-            break;
-        case 'show_item_view':
-            logger.off();
-            person_view = new PersonView({ model: person });
-            region.show(person_view);
-            console.log("person: change the first name");
-            console.log("poke button doesn't work yet");
-            break;
-        case 'show_item_view_with_events':
-            logger.off();
-            person_view = new PersonViewWithEvents({ model: person });
-            region.show(person_view);
-            break;
-        case 'collection_view':
-            logger.off();
-            people.comparator = 'first_name';
-            people.sort();
-            var people_view = new PeopleView({
-            	collection: people
-            });
-            region.show(people_view);
-            console.log("david = people.remove('david')");
-            console.log("re-add david");
-            console.log("re-sort by last name");
-            break;
-        case 'filtered_collection_view':
-            logger.off();
-            var filtered_people_view = new FilteredPeopleView({
-            	collection: people
-            });
-            region.show(filtered_people_view);
-            break;
-        case 'layout_view':
-            logger.off();
-            var layout_view = new MyLayoutView();
-            region.show(layout_view);
-            break;
-        default:
-            console.log('demo:', demo);
-    }
+	console.clear();
+	switch(demo) {
+		case 'model_events':
+			logger.on();
+			console.log("person: set the first name");
+			console.log("set it again");
+			break;
+		case 'collection_methods':
+			logger.off();
+			console.log("people: check the length");
+			console.log("pluck first names");
+			console.log("set the comparator and sort");
+			console.log("pluck first names again");
+			break;
+		case 'collection_events':
+			logger.on();
+			console.log("people: get the last person");
+			console.log("remove the last person");
+			console.log("re-add the last person");
+			console.log("modify the last person");
+			break;
+		case 'show_item_view':
+			logger.off();
+			person_view = new PersonView({ model: person });
+			region.show(person_view);
+			console.log("person: change the first name");
+			console.log("poke button doesn't work yet");
+			break;
+		case 'show_item_view_with_events':
+			logger.off();
+			person_view = new PersonViewWithEvents({ model: person });
+			region.show(person_view);
+			break;
+		case 'collection_view':
+			logger.off();
+			people.comparator = 'first_name';
+			people.sort();
+			var people_view = new PeopleView({
+				collection: people
+			});
+			region.show(people_view);
+			console.log("david = people.remove('david')");
+			console.log("re-add david");
+			console.log("re-sort by last name");
+			break;
+		case 'filtered_collection_view':
+			logger.off();
+			var filtered_people_view = new FilteredPeopleView({
+				collection: people
+			});
+			region.show(filtered_people_view);
+			break;
+		case 'layout_view':
+			logger.off();
+			var layout_view = new MyLayoutView();
+			region.show(layout_view);
+			break;
+		default:
+			console.log('demo:', demo);
+	}
 };
