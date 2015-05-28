@@ -1,3 +1,5 @@
+(this is the original draft of the presentation. now outdated. see presentation.md)
+
 # Backbone & Marionette
 
 ## Backbone
