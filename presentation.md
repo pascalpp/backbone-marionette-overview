@@ -25,7 +25,7 @@ An event system built into every Backbone object
 [reveal]
 
 - When something happens, objects `trigger` events
-- Other objects `listenTo` those events with event handlers
+- Objects `listenTo` events with event handlers
 - Objects `stopListening` when they’re destroyed
 
 Events names typically take the form of `verb` or `verb:subject`.
@@ -76,10 +76,6 @@ person.set('first_name', 'James');
 
 person.get('first_name'); // returns 'James'
 ```
-
-!
-
-# Backbone.Model
 
 You can set multiple attributes at once.
 
@@ -210,7 +206,7 @@ The implementation is left up to you:
 - html string concatenation
 - DOM insertion
 - responding to data changes
-- DOM removal and cleanup
+- DOM removal and event cleanup
 ```
 
 This is where Marionette comes in.
@@ -249,7 +245,7 @@ Let’s make a view!
 !
 
 #### Using Marionette.ItemView
-# Define a template
+# 1. Define a template
 
 [reveal]
 
@@ -268,7 +264,7 @@ Note that we don’t define the outermost node in the template.
 !
 
 #### Using Marionette.ItemView
-# Define a view
+# 2. Define the view
 
 [reveal]
 
@@ -292,7 +288,7 @@ Note that we don’t have to define a `render` method.
 !
 
 #### Using Marionette.ItemView
-# Define a view
+# 2. Define the view
 
 ```js
 // person_view.js
@@ -314,7 +310,7 @@ Note that we don’t have to define a `render` method.
 !
 
 #### Using Marionette.ItemView
-# Instantiate the view with a model and show it
+# 3. Instantiate the view with a model and show it
 
 [reveal]
 
@@ -415,7 +411,7 @@ Let’s make a collection view!
 !
 
 #### Using Marionette.CollectionView
-# Define a collection view
+# 1. Define a collection view
 
 [reveal]
 
@@ -437,7 +433,7 @@ Note that a collection view does not use a template; its child views do.
 !
 
 #### Using Marionette.CollectionView
-# Instantiate the view with a collection and show it
+# 2. Instantiate the view with a collection and show it
 
 [reveal]
 
@@ -472,6 +468,8 @@ var PeopleView = Marionette.CollectionView.extend({
 });
 ```
 
+First, let's have the view re-render when any models change.
+
 !
 #### Using Marionette.CollectionView
 # Filtering the collection
@@ -490,6 +488,8 @@ var PeopleView = Marionette.CollectionView.extend({
 });
 ```
 
+Now, let's add a filter method…
+
 !
 #### Using Marionette.CollectionView
 # Filtering the collection
@@ -507,6 +507,9 @@ var PeopleView = Marionette.CollectionView.extend({
 	}
 });
 ```
+
+Now, let's add a filter method which returns false if the model has been poked.
+
 
 [reveal]
 
@@ -543,11 +546,11 @@ region.empty();
 
 # Marionette View Events
 
+When a view is shown in a region, a series of events are triggered on it.
+
 [reveal]
 
-Backbone events are triggered _after_ the event has occurred.
-
-Many events have a `before` companion event.
+Events are triggered _after_ the event has occurred, so many events have a `before` companion event.
 
 - `before:render` : The view is about to render.
 - `render`        : The view has rendered.
@@ -567,11 +570,16 @@ A view can `listenTo` any of these events when it is initialized.
 Or, it can define methods named after these events, using the convention:
 
 ```
-event name      view event handler
-'some:event'    'onSomeEvent'
+event name   => event handler
+'some:event' => 'onSomeEvent'
 ```
 
-`onBeforeRender`, `onRender`, `onBeforeAttach`, `onAttach`, `onBeforeShow`, `onShow`, etc.
+So a view can define handlers for events such as
+
+- `onBeforeRender`
+- `onRender`
+- `onAttach`
+- `onShow`
 
 This convention can be used for `custom:event` names too.
 
@@ -587,12 +595,10 @@ This convention can be used for `custom:event` names too.
 
 Let’s make a layout view!
 
-TODO: show people view with first/last sort buttons in the head
-
 !
 
 #### Using Marionette.LayoutView
-# Define a template with some regions
+# 1. Define a template with some regions
 
 [reveal]
 
@@ -605,48 +611,53 @@ TODO: show people view with first/last sort buttons in the head
 !
 
 #### Using Marionette.LayoutView
-# Define a layout view
+# 2. Define a layout view
 
 [reveal]
 
 ```js
-// require our template and a couple child views
-var Template = require('text!./layout.html');
-var HeadView = require('./head_view');
-var BodyView = require('./body_view');
+var LayoutTemplate = require('text!./layout.html');
+var SortButtonView = require('./sort_button_view'); // not shown
+var PeopleView = require('./people_view');
 ```
+
+Require our template and a couple child views.
+
+(SortButtonView shows a couple buttons that sort the collection by first or last name.)
+
 
 !
 
 #### Using Marionette.LayoutView
-# Define a layout view
+# 2. Define a layout view
 
 ```js
-// require our template and a couple child views
-var Template = require('text!./layout.html');
-var HeadView = require('./head_view');
-var BodyView = require('./body_view');
+var LayoutTemplate = require('text!./layout.html');
+var SortButtonView = require('./sort_button_view'); // not shown
+var PeopleView = require('./people_view');
 
 var MyLayoutView = Marionette.LayoutView.extend({
 	className: 'my-layout',
-	template: _.template(Template)
+	template: _.template(LayoutTemplate)
 });
 ```
 
+Define the layout and give it our template.
+
+
 !
 
 #### Using Marionette.LayoutView
-# Define a layout view
+# 2. Define a layout view
 
 ```js
-// require our template and a couple child views
-var Template = require('text!./layout.html');
-var HeadView = require('./head_view');
-var BodyView = require('./body_view');
+var LayoutTemplate = require('text!./layout.html');
+var SortButtonView = require('./sort_button_view'); // not shown
+var PeopleView = require('./people_view');
 
 var MyLayoutView = Marionette.LayoutView.extend({
 	className: 'my-layout',
-	template: _.template(Template),
+	template: _.template(LayoutTemplate),
 	regions: {
 		head: '.head-region',
 		body: '.body-region'
@@ -654,44 +665,47 @@ var MyLayoutView = Marionette.LayoutView.extend({
 });
 ```
 
+Define our regions, using CSS selectors from our template.
+
 !
 
 #### Using Marionette.LayoutView
-# Define a layout view
+# 2. Define a layout view
 
 ```js
-// require our template and a couple child views
-var Template = require('text!./layout.html');
-var HeadView = require('./head_view');
-var BodyView = require('./body_view');
+var LayoutTemplate = require('text!./layout.html');
+var SortButtonView = require('./sort_button_view'); // not shown
+var PeopleView = require('./people_view');
 
 var MyLayoutView = Marionette.LayoutView.extend({
 	className: 'my-layout',
-	template: _.template(Template),
+	template: _.template(LayoutTemplate),
 	regions: {
 		head: '.head-region',
 		body: '.body-region'
 	},
 	onRender: function() {
-		// instantiate a new HeadView
-		// and show it in the head region
-		this.head.show(new HeadView({
-			model: this.model
+		this.head.show(new SortButtonView({
+			collection: people
 		}));
 
-		// instantiate a new BodyView
-		// and show it in the body region
-		this.body.show(new BodyView({
-			model: this.model
+		this.body.show(new PeopleView({
+			collection: people
 		}));
 	}
 });
 ```
 
-[reveal]
+When the view is rendered, show our child views in our regions.
 
-Adding child views `onRender` allows you to build a whole view hierarchy and push it into the DOM in one fell swoop.
+`DEMO:layout_view`
 
 !
 
 # The End!
+
+_see also_
+
+- [backbonejs.org](http://backbonejs.org)
+- [marionettejs.com](http://marionettejs.com)
+- [underscorejs.org](http://underscorejs.org)

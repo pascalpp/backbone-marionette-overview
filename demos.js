@@ -123,6 +123,61 @@ var FilteredPeopleView = Marionette.CollectionView.extend({
 });
 
 
+var SortButtonTemplate = '<div class="button first">First</div><div class="button last">Last</div>';
+
+var SortButtonView = Marionette.ItemView.extend({
+    className: 'sortbar',
+    template: _.template(SortButtonTemplate),
+    ui: {
+        first: '.button.first',
+        last: '.button.last',
+    },
+    events: {
+        'click @ui.first': 'sortByFirstName',
+        'click @ui.last': 'sortByLastName',
+    },
+    sortByFirstName: function() {
+        people.comparator = 'first_name';
+        people.sort();
+        this.ui.first.addClass('active');
+        this.ui.last.removeClass('active');
+    },
+    sortByLastName: function() {
+        people.comparator = 'last_name';
+        people.sort();
+        this.ui.last.addClass('active');
+        this.ui.first.removeClass('active');
+    },
+    onRender: function() {
+        this.sortByFirstName();
+    }
+});
+
+var MyLayoutTemplate = '<div class="head-region"></div><div class="body-region"></div>';
+
+var MyLayoutView = Marionette.LayoutView.extend({
+	className: 'my-layout',
+	template: _.template(MyLayoutTemplate),
+	regions: {
+		head: '.head-region',
+		body: '.body-region'
+	},
+	onRender: function() {
+		// instantiate a new SortButtonView
+		// and show it in the head region
+		this.head.show(new SortButtonView({
+			collection: people
+		}));
+
+		// instantiate a new PeopleView
+		// and show it in the body region
+		this.body.show(new PeopleView({
+			collection: people
+		}));
+	}
+});
+
+
 var region = new Marionette.Region({
     el: '.testnode'
 });
@@ -180,6 +235,11 @@ var dispatcher = function(demo) {
             	collection: people
             });
             region.show(filtered_people_view);
+            break;
+        case 'layout_view':
+            logger.off();
+            var layout_view = new MyLayoutView();
+            region.show(layout_view);
             break;
         default:
             console.log('demo:', demo);

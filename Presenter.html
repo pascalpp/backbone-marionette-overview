@@ -17,6 +17,11 @@
         padding: 80px 120px;
     }
 
+    a {
+        color: #ddc;
+        text-decoration: none;
+    }
+
     h1,h2,h3,h4,h5,h6 {
         font-family: Helvetica;
         text-rendering: optimizeLegibility;
@@ -91,7 +96,6 @@
         margin:auto;
         font-size:32px;
         text-shadow: #000 0 2px 0;
-        padding-bottom: 80px;
         width: 100%;
     }
     .centered[slide=backbonemarionette] {
@@ -99,17 +103,26 @@
         font-size: 50px;
     }
     .centered[slide=theend] {
-        padding-top: 300px;
-        font-size: 60px;
+        padding-top: 150px;
         text-align: center;
+        font-size: 50px;
+    }
+    .centered[slide=theend] ul {
+        margin: 0;
+        padding: 0;
+    }
+    .centered[slide=theend] li {
+        list-style: none;
+        padding: 0;
+        margin-left: 0;
     }
 
     .centered .reveal {
         opacity: 0;
-        transition: opacity 100ms ease-in-out;
     }
     .centered .reveal.revealed {
         opacity: 1;
+        transition: opacity 100ms ease-in-out;
     }
 
     .centered li {
@@ -193,6 +206,25 @@
     li.person button {
         font-size: 20px;
         font-family: inherit;
+    }
+
+    .sortbar {
+        display: flex;
+        flex-flow: row;
+    }
+    .sortbar .button {
+        width: 100%;
+        text-align: center;
+        background-color: #666;
+        color: #ccc;
+        padding: 5px;
+        border: 1px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .sortbar .button.active {
+        background-color: #000;
+        color: #fff;
     }
 
 
@@ -283,6 +315,7 @@ var $view;
 var revealed = {};
 
 var prepSlide = function() {
+    $(window).scrollTop(0);
     $view.removeAttr('reveal').removeAttr('revealed');
 
     var reveal = false;
@@ -365,7 +398,10 @@ Present.showSlide = function(slide) {
 };
 Present.nextSlide = function() {
     var reveal = $view.find('.reveal').not('.revealed');
-    if (reveal.length) {
+    console.log()
+    if ($view.height() > window.innerHeight + $(window).scrollTop()) {
+        $(window).scrollTop(window.innerHeight + $(window).scrollTop());
+    } else if (reveal.length) {
         reveal.first().addClass('revealed');
     } else {
         if (Present.currentSlide < Present.slides.length-1) {
@@ -374,7 +410,9 @@ Present.nextSlide = function() {
     }
 };
 Present.prevSlide = function() {
-    if (Present.currentSlide > 0) {
+    if ($(window).scrollTop() > 0) {
+        $(window).scrollTop(0);
+    } else if (Present.currentSlide > 0) {
         Present.showSlide(Present.currentSlide-1);
     }
 };
@@ -550,6 +588,7 @@ $('.slideCount select').change(function () {
     Present.showSlide(parseInt($(this).val()));
     setTimeout(function () { document.body.focus(); }, 0);
 });
+
 </script>
 
 </body>
