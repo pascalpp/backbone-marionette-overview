@@ -328,6 +328,8 @@ var person_view = new PersonView({
 region.show(person_view);
 ```
 
+(We’ll talk about regions in a bit.)
+
 `DEMO:show_item_view`
 
 !
