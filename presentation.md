@@ -2,6 +2,8 @@
 
 The important bits
 
+[pascalpp.github.io/backbone-marionette-overview](http://pascalpp.github.io/backbone-marionette-overview)
+
 !
 
 # Backbone
