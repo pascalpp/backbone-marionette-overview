@@ -43,18 +43,10 @@
 	}
 	.slideCount {
 		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
+		top: 1.5em;
+		right: 0;
 		height:1.5em;
-		font-size: 18px;
 		overflow:hidden;
-	}
-	.slideProgress
-	{
-		background-color: green;
-		width: 100%;
-		min-height: 10px;
 	}
 	.slideCount select {
 		color:white;
@@ -64,11 +56,18 @@
 		font-size:1em;
 		height:1.3em;
 		width:10em;
-		display: none;
 
 		-webkit-appearance: none;
 		border-radius:0;
 		-webkit-border-radius: 0;
+	}
+	.slideProgress {
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: green;
+		width: 100%;
+		min-height: 10px;
 	}
 	.padding {
 		height: 60px;
@@ -172,10 +171,6 @@
 		flex-flow: column;
 		min-height: 1000px;
 		width: 100%;
-	}
-
-	.notes {
-		display: none;
 	}
 
 	ul.people {
@@ -285,10 +280,10 @@
 
 		<div class="testnode"></div>
 
+		<div class="slideProgress"></div>
 		<div class="slideCount">
 			<select tabindex="-1">
 			</select>
-			<div class="slideProgress"></div>
 		</div>
 
 		<div class="padding">
