@@ -184,15 +184,18 @@ var region = new Marionette.Region({
 
 
 var dispatcher = function(demo) {
+	var demo_name = demo.data('demo');
 	console.clear();
-	switch(demo) {
+	switch(demo_name) {
 		case 'model_events':
 			logger.on();
+			demo.text('Open console');
 			console.log("person: set the first name");
 			console.log("set it again");
 			break;
 		case 'collection_methods':
 			logger.off();
+			demo.text('Open console');
 			console.log("people: check the length");
 			console.log("pluck first names");
 			console.log("sort by first name");
@@ -200,6 +203,7 @@ var dispatcher = function(demo) {
 			break;
 		case 'collection_events':
 			logger.on();
+			demo.text('Open console');
 			console.log("people: get the last person");
 			console.log("remove the last person");
 			console.log("re-add the last person");
@@ -207,6 +211,7 @@ var dispatcher = function(demo) {
 			break;
 		case 'show_item_view':
 			logger.off();
+			demo.text('Open console');
 			person_view = new PersonView({ model: person });
 			region.show(person_view);
 			console.log("person: change the first name");
@@ -219,6 +224,7 @@ var dispatcher = function(demo) {
 			break;
 		case 'collection_view':
 			logger.off();
+			demo.text('Open console');
 			people.comparator = 'first_name';
 			people.sort();
 			var people_view = new PeopleView({
