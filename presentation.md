@@ -2,7 +2,7 @@
 
 The important bits
 
-[pascalpp.github.io/backbone-marionette-overview](http://pascalpp.github.io/backbone-marionette-overview)
+[github.com/pascalpp/backbone-marionette-overview](https://github.com/pascalpp/backbone-marionette-overview)
 
 !
 
@@ -713,3 +713,4 @@ _see also_
 - [backbonejs.org](http://backbonejs.org)
 - [marionettejs.com](http://marionettejs.com)
 - [underscorejs.org](http://underscorejs.org)
+- [fork this presentation](https://github.com/pascalpp/backbone-marionette-overview)
